@@ -138,13 +138,8 @@ func (r *Route) GetHandler() http.Handler {
 }
 
 func (r *Route) Roles(roles string) *Route {
-	if r.roles != "" {
-		r.err = fmt.Errorf("muxplus: route already has roles %q, can't set %q",
-			r.roles, roles)
-	}
 	if r.err == nil {
 		r.roles = roles
-		r.namedRoutes[roles] = r
 	}
 	return r
 }
@@ -154,13 +149,8 @@ func (r *Route) GetRoles() string {
 }
 
 func (r *Route) ValidationModel(m interface{}) *Route {
-	if r.validationModel != "" {
-		r.err = fmt.Errorf("muxplus: route already has roles %q, can't set %q",
-			r.validationModel, m)
-	}
 	if r.err == nil {
 		r.validationModel = m
-		r.namedRoutes[fmt.Sprintf("%v", m)] = r
 	}
 	return r
 }
