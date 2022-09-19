@@ -16,24 +16,25 @@ import (
 // Route stores information to match a request and build URLs.
 type Route struct {
 	// Request handler for the route.
-	handler http.Handler
+	handler 		  http.Handler
 	// If true, this route never matches: it is only used to build URLs.
-	buildOnly bool
+	buildOnly 				   bool
 	// The name used to build URLs.
-	name string
+	name 					 string
 	// Error resulted from building a route.
-	err error
+	err 					  error
 
 	// "global" reference to all named routes
-	namedRoutes map[string]*Route
+	namedRoutes   map[string]*Route
 
 	// config possibly passed in from `Router`
 	routeConf
 
-	roles           string
-	kycValidOnly    bool
-	mfaValidOnly    bool
-	validationModel interface{}
+	roles           		 string
+	requiresDeviceToken 	   bool
+	kycValidOnly    		   bool
+	mfaValidOnly    		   bool
+	validationModel 	interface{}
 }
 
 // SkipClean reports whether path cleaning is enabled for this route via
@@ -148,6 +149,18 @@ func (r *Route) GetRoles() string {
 	return r.roles
 }
 
+func (r *Route) IsKYCOnly() bool {
+	return r.kycValidOnly
+}
+
+func (r *Route) IsMFAOnly() bool {
+	return r.mfaValidOnly
+}
+
+func (r *Route) RequiresDeviceToken() bool {
+	return r.requiresDeviceToken
+}
+
 func (r *Route) ValidationModel(m interface{}) *Route {
 	if r.err == nil {
 		r.validationModel = m
@@ -166,6 +179,11 @@ func (r *Route) KycVerifiedOnly() *Route {
 
 func (r *Route) MFAValidOnly() *Route {
 	r.mfaValidOnly = true
+	return r
+}
+
+func (r *Route) DeviceTokenOnly() *Route {
+	r.requiresDeviceToken = true
 	return r
 }
 
